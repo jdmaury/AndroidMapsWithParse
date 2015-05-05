@@ -62,7 +62,7 @@ public class MainActivity  extends FragmentActivity implements LocationListener{
     private PolylineOptions coordenadas;
     Button boton;
     List<ParseObject> ob;
-
+    int initial=0;
 
 
 
@@ -71,9 +71,11 @@ public class MainActivity  extends FragmentActivity implements LocationListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         Parse.enableLocalDatastore(this);
 
         Parse.initialize(this, "emNrgdU8T7yMTdRk5EcoRVVx71UW4RsD3Lz7xJJL", "Wj45iPUXi4bFQDjJNff9YxnN01iubq2h1W3lQeqO");
+
 
 
 
@@ -190,7 +192,7 @@ public class MainActivity  extends FragmentActivity implements LocationListener{
     @Override
     protected void onResume() {
         super.onResume();
-        locationManager.requestLocationUpdates(provider,1200,0,this);
+        locationManager.requestLocationUpdates(provider,4000,5,this);
 
 
 
@@ -236,8 +238,15 @@ public class MainActivity  extends FragmentActivity implements LocationListener{
             float lat = (float) location.getLatitude();
             float lng = (float) (location.getLongitude());
 
-            //Marker prueba = map.addMarker(new MarkerOptions()
-            //      .position(new LatLng(lat, lng)));
+            if(initial==0)
+            {
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 18));
+                Marker prueba = map.addMarker(new MarkerOptions()
+                        .position(new LatLng(lat,lng)));
+                initial=1;
+            }
+
+
             //coordenadas.add(new LatLng(lat,lng)).width(8).color(Color.BLUE);
 
 
@@ -310,6 +319,7 @@ public class MainActivity  extends FragmentActivity implements LocationListener{
 
             ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
                     "DataEntry");
+            query.setLimit(320);
 
             ob = query.find();
             for (ParseObject dato : ob) {
@@ -317,7 +327,7 @@ public class MainActivity  extends FragmentActivity implements LocationListener{
 
 
 //                float lat = Float.parseFloat(dato.getString("Latitud"));
-    //            float lng = Float.parseFloat(dato.getString("Longitud"));
+                //            float lng = Float.parseFloat(dato.getString("Longitud"));
 
                 String latitude = String.format("%.7f",dato.get("Latitud"));
                 String longitude = String.format("%.7f",dato.get("Longitud"));
@@ -338,6 +348,7 @@ public class MainActivity  extends FragmentActivity implements LocationListener{
 
 
         ruta = map.addPolyline(coordenadas);
+        String jje="h";
     }
 
 
